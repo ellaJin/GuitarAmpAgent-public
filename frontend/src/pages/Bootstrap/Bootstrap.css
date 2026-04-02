@@ -1,0 +1,33 @@
+/* src/pages/Bootstrap/Bootstrap.css */
+.boot-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f8f9fa;
+  font-family: sans-serif;
+}
+
+/* 一个简单的转圈动画 */
+.boot-loader {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #1a73e8; /* 使用 Google Blue */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.boot-text {
+  margin-top: 20px;
+  color: #5f6368;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

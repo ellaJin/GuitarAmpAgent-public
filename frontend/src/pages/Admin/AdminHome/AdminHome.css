@@ -1,0 +1,308 @@
+.admin-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px;
+  background: #0b0c10;
+  color: #e8e8e8;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.admin-card {
+  width: 100%;
+  max-width: 860px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.admin-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 22px;
+}
+
+.admin-header p {
+  margin: 0 0 20px 0;
+  opacity: 0.75;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.primary {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #ffffff;
+  color: #000;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondary {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: #e8e8e8;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255, 80, 80, 0.12);
+  color: #ff6b6b;
+  margin-bottom: 16px;
+}
+
+.empty-msg {
+  opacity: 0.6;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.device-list {
+  display: grid;
+  gap: 16px;
+}
+
+.device-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.device-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.device-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #e8e8e8;
+}
+
+.source-list {
+  display: grid;
+  gap: 8px;
+}
+
+.source-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 13px;
+}
+
+.source-title {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-type {
+  opacity: 0.7;
+}
+
+.source-status,
+.source-enrichment {
+  opacity: 0.85;
+}
+
+.no-sources {
+  opacity: 0.5;
+  font-size: 13px;
+  padding: 8px 0;
+}
+
+.source-list-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 8px;
+  padding: 4px 10px 8px 10px;
+  font-size: 11px;
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #3b82f6;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.enrichment {
+  background: #10b981;
+}
+
+/* ---------- MIDI column (only shown when device.supports_midi = true) ---------- */
+.source-row--midi,
+.source-list-header--midi {
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+}
+
+.source-midi-status {
+  opacity: 0.85;
+}
+
+/* ---------- Device meta + badges (A) ---------- */
+.device-meta {
+  margin-top: -6px; /* 贴近 device-name，下移一点点 */
+  margin-bottom: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.device-meta-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  opacity: 0.75;
+  font-size: 12px;
+}
+
+.device-meta-label {
+  opacity: 0.7;
+}
+
+.device-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cap-badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  opacity: 0.9;
+}
+
+/* ---------- Source meta row (B) + actions placeholder ---------- */
+.source-title-wrap {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.source-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+  opacity: 0.65; /* muted */
+  min-width: 0;
+}
+
+.source-file {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 240px;
+}
+
+.dot {
+  opacity: 0.6;
+}
+
+.source-actions {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-mini {
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: #e8e8e8;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.btn-mini:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-mini.danger {
+  border-color: rgba(255, 80, 80, 0.35);
+  color: #ff6b6b;
+}
+
+/* ---------- Admin token input row ---------- */
+.admin-token-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.admin-token-label {
+  font-size: 13px;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.admin-token-input {
+  flex: 1;
+  max-width: 320px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+/* ---------- Inline unlink confirmation ---------- */
+.source-unlink-confirm-label {
+  font-size: 11px;
+  color: #ff6b6b;
+  opacity: 0.9;
+  margin-right: 2px;
+}

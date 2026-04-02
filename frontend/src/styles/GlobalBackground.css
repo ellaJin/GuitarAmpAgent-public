@@ -1,0 +1,26 @@
+// frontend/src/styles/GlobalBackground.css 
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  width: 100%;
+}
+
+body {
+  background:
+    radial-gradient(1200px 800px at 15% 20%, rgba(139,92,255,0.22), transparent 60%),
+    radial-gradient(1000px 700px at 85% 75%, rgba(109,211,255,0.20), transparent 60%),
+    radial-gradient(1400px 900px at 50% 50%, rgba(255,255,255,0.55), transparent 70%),
+    linear-gradient(180deg, #efeaff 0%, #eaf6ff 100%);
+
+  background-attachment: fixed;
+}
+
+
+
+
+

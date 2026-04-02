@@ -1,0 +1,239 @@
+/* src/pages/MyDevices/MyDevices.css */
+
+.mydevices-root {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 32px 40px;
+  font-family: inherit;
+}
+
+.mydevices-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.mydevices-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.mydevices-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mydevices-back-btn {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.12s ease;
+}
+
+.mydevices-back-btn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.mydevices-add-btn {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  background: #111827;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.mydevices-add-btn:hover {
+  background: #374151;
+}
+
+/* ========================= Device grid ========================= */
+
+.mydevices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.mydevices-empty {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 15px;
+  padding: 60px 0;
+}
+
+/* ========================= Device card ========================= */
+
+.device-card-user {
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  transition: box-shadow 0.15s ease;
+}
+
+.device-card-user:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.device-card-user.is-active {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+}
+
+/* Active badge */
+.device-active-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 20px;
+  padding: 2px 8px;
+  letter-spacing: 0.03em;
+}
+
+/* Device image */
+.device-card-image {
+  width: 120px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.device-card-image-placeholder {
+  width: 120px;
+  height: 80px;
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+/* Device info */
+.device-card-info {
+  text-align: center;
+}
+
+.device-card-brand {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+.device-card-model {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.device-card-variant {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* ========================= Activate inline confirm ========================= */
+
+.device-card-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.device-activate-btn {
+  width: 100%;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 0;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #111827;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.device-activate-btn:hover {
+  background: #f3f4f6;
+}
+
+.device-activate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Inline confirmation row */
+.device-confirm-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.device-confirm-label {
+  font-size: 12px;
+  color: #374151;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.device-confirm-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.device-confirm-yes {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  background: #111827;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.device-confirm-yes:hover {
+  background: #374151;
+}
+
+.device-confirm-no {
+  font-size: 12px;
+  padding: 5px 14px;
+  background: #f9fafb;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.device-confirm-no:hover {
+  background: #f3f4f6;
+}

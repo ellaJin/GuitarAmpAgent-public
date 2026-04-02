@@ -1,0 +1,380 @@
+/* frontend/src/pages/Onboarding/Device/Device.css */
+
+/* Keep Device page colors consistent with Login */
+:root{
+  --neon-purple: #8b5cff;
+  --neon-blue: #6dd3ff;
+  --neon-gradient: linear-gradient(90deg, #8b5cff, #6dd3ff);
+
+  --bg1: #efeaff;
+  --bg2: #eaf6ff;
+
+  --text: #0f172a;
+  --muted: rgba(15,23,42,0.70);
+
+  --card: rgba(255,255,255,0.72);
+  --card-strong: rgba(255,255,255,0.86);
+  --card-border: rgba(15,23,42,0.10);
+
+  --shadow: 0 35px 90px rgba(15, 23, 42, 0.18);
+}
+
+/* =========================
+   Page background (match Login)
+========================= */
+.onboarding-page {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+
+  background:
+    radial-gradient(1200px 800px at 15% 20%, rgba(139,92,255,0.22), transparent 60%),
+    radial-gradient(1000px 700px at 85% 75%, rgba(109,211,255,0.20), transparent 60%),
+    radial-gradient(1400px 900px at 50% 50%, rgba(255,255,255,0.55), transparent 70%),
+    linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+
+  color: var(--text);
+}
+
+/* Make the whole “board” larger and not cramped */
+.onboarding-card {
+  width: 100%;
+  min-height: 100vh;
+  max-width: 1500px;
+  padding: 90px 56px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  animation: fadeIn 0.35s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Badge: make it match the purple/blue vibe */
+.icon-badge {
+  width: 64px;
+  height: 64px;
+  background: rgba(139,92,255,0.14);
+  border: 1px solid rgba(139,92,255,0.28);
+  border-radius: 16px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  margin: 0 0 18px;
+
+  box-shadow: 0 18px 40px rgba(139,92,255,0.14);
+}
+
+.onboarding-title {
+  font-size: 40px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0 0 10px;
+}
+
+.onboarding-subtitle {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.7;
+  margin: 0 0 34px;
+  max-width: 72ch;
+}
+
+/* -------------------------
+   split layout + pills + preview
+------------------------- */
+
+.step-split {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.preview-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Form column bigger */
+.modern-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 760px;
+}
+
+.field-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.field-label {
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(15,23,42,0.78);
+}
+
+/* keep your link styling */
+.mini-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  cursor: pointer;
+  color: rgba(59, 130, 246, 0.95);
+}
+
+.mini-link:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Inputs (only used when “Type instead”) */
+.input-group input {
+  width: 100%;
+  padding: 16px 16px;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  border-radius: 14px;
+  font-size: 16px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.78);
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+}
+
+.input-group input::placeholder{
+  color: rgba(15,23,42,0.45);
+}
+
+.input-group input:focus {
+  border-color: rgba(109,211,255,0.95);
+  outline: none;
+  box-shadow: 0 0 0 5px rgba(109,211,255,0.22);
+}
+
+/* Pills */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pill {
+  appearance: none;
+  -webkit-appearance: none;
+
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  background: rgba(255, 255, 255, 0.62);
+  color: rgba(15, 23, 42, 0.90);
+
+  padding: 14px 18px;
+  border-radius: 999px;
+
+  font-size: 16px;
+  font-weight: 900;
+
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.pill:hover {
+  transform: translateY(-1px);
+  border-color: rgba(109,211,255,0.55);
+  background: rgba(255,255,255,0.78);
+  box-shadow: 0 12px 32px rgba(109,211,255,0.18);
+}
+
+.pill--active {
+  border-color: rgba(139,92,255,0.65);
+  background: rgba(139,92,255,0.18);
+  color: rgba(15,23,42,0.92);
+  box-shadow: 0 14px 36px rgba(139,92,255,0.18);
+}
+
+.pill:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.hint-text {
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgba(15,23,42,0.58);
+}
+
+.form-error {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.10);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #dc2626;
+  font-size: 13px;
+}
+
+/* BIG CTA bar (match Login vibe: use neon gradient) */
+.primary-action-btn {
+  width: 100%;
+  padding: 22px 22px;
+  border: none;
+  border-radius: 16px;
+  font-size: 20px;
+  font-weight: 900;
+
+  background: var(--neon-gradient);
+  color: #041024;
+
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 0 18px 45px rgba(139,92,255,0.22);
+}
+
+.primary-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 60px rgba(109,211,255,0.22);
+}
+
+.primary-action-btn:active {
+  transform: translateY(0px);
+}
+
+.primary-action-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.text-link-btn {
+  background: none;
+  border: none;
+  color: rgba(15,23,42,0.70);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 12px;
+}
+
+/* Preview card (light glass like Login container) */
+.device-preview {
+  width: min(760px, 100%);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 22px;
+  padding: 30px;
+
+  box-shadow:
+    0 18px 55px rgba(15,23,42,0.12),
+    0 0 0 1px rgba(255,255,255,0.55) inset;
+}
+
+.device-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 18px;
+  user-select: none;
+  pointer-events: none;
+}
+
+.device-meta {
+  margin-top: 16px;
+}
+
+.device-name {
+  font-weight: 900;
+  color: var(--text);
+  font-size: 20px;
+}
+
+.device-model {
+  color: rgba(15,23,42,0.70);
+  font-size: 16px;
+  margin-top: 6px;
+}
+
+.device-preview--empty {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 44px 26px;
+}
+
+.device-empty-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.device-empty-title {
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.device-empty-subtitle {
+  color: rgba(15,23,42,0.62);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 50ch;
+}
+
+/* Welcome help text */
+.onboarding-help {
+  margin-top: 22px;
+  font-size: 14px;
+  color: rgba(15,23,42,0.62);
+}
+
+.onboarding-help a {
+  color: rgba(59, 130, 246, 0.95);
+  text-decoration: none;
+}
+
+.onboarding-help a:hover {
+  text-decoration: underline;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .onboarding-card {
+    padding: 44px 18px;
+  }
+
+  .onboarding-title {
+    font-size: 30px;
+  }
+
+  .step-split {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .modern-form {
+    max-width: 100%;
+  }
+
+  .device-preview {
+    width: 100%;
+  }
+}

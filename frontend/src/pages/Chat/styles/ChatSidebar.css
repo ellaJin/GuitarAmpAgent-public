@@ -1,0 +1,217 @@
+/* src/pages/Chat/ChatSidebar.css */
+
+/* =========================
+   Sidebar
+========================= */
+.chat-sidebar {
+  width: 280px;
+  min-width: 280px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #f3f4f6;
+  background-color: #ffffff;
+}
+
+/* Sidebar 顶部区（如果你有用到 sidebar-topbar / icon button） */
+.sidebar-topbar {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-icon-btn {
+  background: none;
+  border: none;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #111827;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-icon-btn:hover {
+  background-color: #f3f4f6;
+}
+
+/* =========================
+   Actions
+========================= */
+.sidebar-action-area {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+
+  /* 你要“平均分散”就用 space-evenly */
+  justify-content: space-evenly;
+}
+
+.sidebar-action-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 8px;
+
+  transition: background-color 0.15s ease;
+}
+
+.sidebar-action-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.sidebar-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #111827;
+}
+
+.sidebar-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+/* =========================
+   User Section (bottom)
+========================= */
+.user-section-container {
+  margin-top: auto;
+  padding: 20px 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-top: 1px solid #f3f4f6;
+}
+
+.user-info-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar-circle {
+  width: 34px;
+  height: 34px;
+  background-color: #fbbc04;
+  color: #ffffff;
+
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.user-name-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.upgrade-pill-btn {
+  padding: 4px 12px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+
+  font-size: 12px;
+  background: #ffffff;
+  color: #111827;
+
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.upgrade-pill-btn:hover {
+  background-color: #f9fafb;
+}
+/* ===== Settings Submenu Header ===== */
+
+.submenu-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  color: #ffffff;
+}
+
+.submenu-back {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.submenu-back:hover {
+  opacity: 0.85;
+}
+
+.submenu-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* =========================
+   Conversation list
+========================= */
+.sidebar-conv-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-conv-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px 10px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.12s ease;
+}
+
+.sidebar-conv-item:hover {
+  background-color: #f3f4f6;
+}
+
+.sidebar-conv-item.active {
+  background-color: #f3f4f6;
+}
+
+.conv-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.conv-meta {
+  font-size: 11px;
+  color: #9ca3af;
+}

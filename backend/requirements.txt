@@ -1,0 +1,23 @@
+# --- full-stack backend ---
+fastapi==0.115.6
+uvicorn[standard]==0.30.6
+psycopg[binary]==3.2.3
+python-dotenv==1.0.1
+python-jose[cryptography]
+passlib[bcrypt]
+pydantic-settings
+python-multipart
+
+# --- LLM  ---
+langchain>=1.0.0,<1.1.0
+langgraph>=1.0.0,<1.1.0
+deepagents>=0.1.5
+langchain-openai
+
+# --- vector process ---
+faiss-cpu
+pypdf
+numpy
+pandas
+matplotlib
+tiktoken

@@ -1,0 +1,47 @@
+/* src/pages/Chat/styles/ChatBubbleAlign.css */
+
+/* 訊息區：直向堆疊 */
+.chat-right-panel .chat-messages {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 嘗試把每一則訊息的“外層容器”變成 flex row（很關鍵） */
+.chat-right-panel .chat-messages :where(
+  .message,
+  .message-row,
+  .message-item,
+  .chat-message,
+  li
+) {
+  display: flex;
+  width: 100%;
+}
+
+/* 泡泡/內容最大寬度 */
+.chat-right-panel .chat-messages :where(
+  .message-bubble,
+  .bubble,
+  .content,
+  .message-content
+) {
+  max-width: min(780px, 78%);
+}
+
+/* 使用者 → 左 */
+.chat-right-panel .chat-messages :where(
+  .user,
+  .human,
+  .me
+) {
+  justify-content: flex-start;
+}
+
+/* AI → 右 */
+.chat-right-panel .chat-messages :where(
+  .ai,
+  .assistant
+) {
+  justify-content: flex-end;
+}
+
