@@ -1,16 +1,42 @@
-// src/pages/Chat/components/MessageActions.tsx
+//frontend/src/pages/Chat/components/MessageActions.tsx
 import React, { useState } from "react";
 import { api } from "../../../lib/api";
 
 type Props = {
   content: string;
   messageId?: string;
+  userMessage?: string;
+  isToneRecipe?: boolean; // ✅ 新增
 };
 
-function defaultSongName(text: string): string {
-  const words = text.trim().split(/\s+/).slice(0, 6);
-  const name = words.join(" ");
-  return text.trim().split(/\s+/).length > 6 ? `${name}...` : name;
+function extractSongName(userMessage: string): string {
+  // 嘗試從用戶訊息中提取歌名
+  // 常見模式：「調XX」「彈XX」「XX的效果」「XX 的設定」
+  const patterns = [
+    /[「"']([^「"']+)[」"']/,           // 引號內的文字
+    /(?:調|彈|play|set up|tone for|sound like)\s+(.+?)(?:的|效果|設定|$)/i,
+    /(.+?)(?:的效果|的音色|的設定|效果設定|tone|sound)/i,
+  ];
+
+  for (const pattern of patterns) {
+    const match = userMessage.match(pattern);
+    if (match && match[1]) {
+      return match[1].trim().slice(0, 40);
+    }
+  }
+
+  // 找不到就用用戶訊息前幾個字
+  const words = userMessage.trim().slice(0, 30);
+  return words || "My Song";
+}
+
+function defaultSongName(userMessage: string, aiContent: string): string {
+  if (userMessage && userMessage.trim()) {
+    return extractSongName(userMessage);
+  }
+  // fallback：用 AI 回應前幾個字
+  const words = aiContent.trim().split(/\s+/).slice(0, 6).join(" ");
+  return aiContent.trim().split(/\s+/).length > 6 ? `${words}...` : words;
 }
 
 function downloadTextFile(filename: string, text: string) {
@@ -25,7 +51,7 @@ function downloadTextFile(filename: string, text: string) {
   URL.revokeObjectURL(url);
 }
 
-export default function MessageActions({ content, messageId }: Props) {
+export default function MessageActions({ content, messageId, userMessage = "", isToneRecipe = false }: Props) {
   const [copied, setCopied] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showSaveForm, setShowSaveForm] = useState(false);
@@ -70,7 +96,8 @@ export default function MessageActions({ content, messageId }: Props) {
   };
 
   const openSaveForm = () => {
-    setSongName(defaultSongName(clean));
+    // ✅ 用用戶問題提取歌名，而不是 AI 回應
+    setSongName(defaultSongName(userMessage, clean));
     setShowSaveForm(true);
     setSavedToLib(false);
   };
@@ -131,14 +158,16 @@ export default function MessageActions({ content, messageId }: Props) {
         <button className="msg-action-btn" onClick={handleSave} type="button">
           {saved ? "Saved" : "Save"}
         </button>
-        {savedToLib ? (
-          <button className="msg-action-btn" type="button" disabled>
-            Saved to Library ✓
-          </button>
-        ) : (
-          <button className="msg-action-btn" onClick={openSaveForm} type="button">
-            Save to Library
-          </button>
+        {isToneRecipe && (
+          savedToLib ? (
+            <button className="msg-action-btn" type="button" disabled>
+              Saved to Library ✓
+            </button>
+          ) : (
+            <button className="msg-action-btn" onClick={openSaveForm} type="button">
+              Save to Library
+            </button>
+          )
         )}
       </div>
     </div>

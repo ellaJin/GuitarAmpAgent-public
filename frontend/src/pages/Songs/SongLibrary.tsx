@@ -12,17 +12,32 @@ function formatDate(iso: string): string {
 
 export default function SongLibrary() {
   const navigate = useNavigate();
-  const { songs, selectedSong, loading, detailLoading, selectSong, deleteSong, updateSong } =
-    useSongLibrary();
+  const {
+    filteredSongs,
+    searchQuery,
+    setSearchQuery,
+    selectedSong,
+    loading,
+    detailLoading,
+    selectSong,
+    deleteSong,
+    updateSong,
+    downloadSong,
+  } = useSongLibrary();
 
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [notesInput, setNotesInput] = useState("");
   const [editingNotes, setEditingNotes] = useState(false);
 
+  // 是否正在編輯模式（Edit 按鈕觸發）
+  const [editMode, setEditMode] = useState(false);
+  const [editRawText, setEditRawText] = useState("");
+
   const handleSelectSong = async (id: string) => {
     setEditingName(false);
     setEditingNotes(false);
+    setEditMode(false);
     await selectSong(id);
   };
 
@@ -55,6 +70,30 @@ export default function SongLibrary() {
     await deleteSong(id);
   };
 
+  // Edit 按鈕：進入編輯 AI 回應內容模式
+  const handleEdit = () => {
+    if (!selectedSong) return;
+    setEditRawText(selectedSong.raw_text);
+    setEditMode(true);
+  };
+
+  // Save 按鈕：儲存編輯後的內容
+  const handleSave = async () => {
+    if (!selectedSong) return;
+    await updateSong(selectedSong.id, {
+      notes: editingNotes ? notesInput : selectedSong.notes ?? "",
+      raw_text: editRawText,
+    });
+    setEditMode(false);
+    setEditingNotes(false);
+  };
+
+  // Download 按鈕
+  const handleDownload = () => {
+    if (!selectedSong) return;
+    downloadSong(selectedSong);
+  };
+
   return (
     <div className="songs-root">
       {/* Left: list */}
@@ -66,12 +105,31 @@ export default function SongLibrary() {
           </button>
         </div>
 
+        {/* Search Bar */}
+        <div className="songs-search-wrapper">
+          <span className="songs-search-icon">🔍</span>
+          <input
+            className="songs-search-input"
+            type="text"
+            placeholder="Search songs..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button className="songs-search-clear" onClick={() => setSearchQuery("")}>
+              ✕
+            </button>
+          )}
+        </div>
+
         <div className="songs-list-scroll">
           {loading && <div className="songs-empty">Loading...</div>}
-          {!loading && songs.length === 0 && (
-            <div className="songs-empty">No songs saved yet. Use "Save to Library" on an AI response.</div>
+          {!loading && filteredSongs.length === 0 && (
+            <div className="songs-empty">
+              {searchQuery ? "No songs match your search." : 'No songs saved yet. Use "Save to Library" on an AI response.'}
+            </div>
           )}
-          {songs.map((s) => (
+          {filteredSongs.map((s) => (
             <button
               key={s.id}
               className={`song-list-item${selectedSong?.id === s.id ? " active" : ""}`}
@@ -132,30 +190,47 @@ export default function SongLibrary() {
                 <div className="songs-detail-date">Saved {formatDate(selectedSong.created_at)}</div>
               </div>
 
-              <button
-                className="songs-delete-btn"
-                onClick={() => handleDelete(selectedSong.id)}
-                type="button"
-              >
-                Delete
-              </button>
+              {/* Action buttons: Edit, Save, Download, Delete */}
+              <div className="songs-action-btns">
+                {!editMode ? (
+                  <button className="songs-edit-action-btn" onClick={handleEdit} type="button">
+                    Edit
+                  </button>
+                ) : (
+                  <button className="songs-save-action-btn" onClick={handleSave} type="button">
+                    Save
+                  </button>
+                )}
+                <button className="songs-download-btn" onClick={handleDownload} type="button">
+                  Download
+                </button>
+                <button
+                  className="songs-delete-btn"
+                  onClick={() => handleDelete(selectedSong.id)}
+                  type="button"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
 
             {/* Notes */}
             <div className="songs-notes-label">Notes</div>
-            {editingNotes ? (
+            {editingNotes || editMode ? (
               <>
                 <textarea
                   className="songs-notes-textarea"
                   value={notesInput}
                   onChange={(e) => setNotesInput(e.target.value)}
                   placeholder="Add your notes..."
-                  autoFocus
+                  autoFocus={editingNotes && !editMode}
                 />
-                <div className="songs-notes-actions">
-                  <button className="songs-save-btn" onClick={handleSaveNotes}>Save</button>
-                  <button className="songs-cancel-btn" onClick={() => setEditingNotes(false)}>Cancel</button>
-                </div>
+                {!editMode && (
+                  <div className="songs-notes-actions">
+                    <button className="songs-save-btn" onClick={handleSaveNotes}>Save</button>
+                    <button className="songs-cancel-btn" onClick={() => setEditingNotes(false)}>Cancel</button>
+                  </div>
+                )}
               </>
             ) : (
               <>
@@ -170,10 +245,20 @@ export default function SongLibrary() {
               </>
             )}
 
-            {/* AI response rendered as markdown */}
-            <div className="songs-markdown-body">
-              <ReactMarkdown>{selectedSong.raw_text}</ReactMarkdown>
-            </div>
+            {/* AI response */}
+            {editMode ? (
+              <textarea
+                className="songs-notes-textarea"
+                style={{ minHeight: "400px", fontFamily: "monospace", fontSize: "13px" }}
+                value={editRawText}
+                onChange={(e) => setEditRawText(e.target.value)}
+                placeholder="Edit AI response..."
+              />
+            ) : (
+              <div className="songs-markdown-body">
+                <ReactMarkdown>{selectedSong.raw_text}</ReactMarkdown>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -93,3 +93,64 @@
 ) :where(img, svg) {
   margin-right: 8px;
 }
+/* Markdown 渲染樣式 */
+.message-bubble.markdown-body h3,
+.message-bubble.markdown-body h4 {
+  margin: 10px 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.message-bubble.markdown-body p {
+  margin: 4px 0;
+}
+
+.message-bubble.markdown-body ul,
+.message-bubble.markdown-body ol {
+  padding-left: 18px;
+  margin: 4px 0;
+}
+
+.message-bubble.markdown-body li {
+  margin: 2px 0;
+}
+
+.message-bubble.markdown-body strong {
+  font-weight: 700;
+}
+
+.message-bubble.markdown-body hr {
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  margin: 8px 0;
+}
+
+.message-bubble.markdown-body code {
+  background: rgba(0,0,0,0.06);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 13px;
+}
+/* Table 樣式 */
+.message-bubble.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.message-bubble.markdown-body th,
+.message-bubble.markdown-body td {
+  border: 1px solid rgba(0,0,0,0.12);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.message-bubble.markdown-body th {
+  background: rgba(0,0,0,0.05);
+  font-weight: 700;
+}
+
+.message-bubble.markdown-body tr:nth-child(even) {
+  background: rgba(0,0,0,0.02);
+}

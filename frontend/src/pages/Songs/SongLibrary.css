@@ -4,7 +4,12 @@
 .songs-root {
   display: flex;
   height: 100vh;
-  background: #ffffff;
+  background:
+    radial-gradient(1200px 800px at 15% 20%, rgba(139,92,255,0.22), transparent 60%),
+    radial-gradient(1000px 700px at 85% 75%, rgba(109,211,255,0.20), transparent 60%),
+    radial-gradient(1400px 900px at 50% 50%, rgba(255,255,255,0.55), transparent 70%),
+    linear-gradient(180deg, #efeaff 0%, #eaf6ff 100%);
+  background-attachment: fixed;
   font-family: inherit;
 }
 
@@ -12,10 +17,12 @@
 .songs-list-panel {
   width: 320px;
   min-width: 280px;
-  border-right: 1px solid #f3f4f6;
+  border-right: 1px solid rgba(243, 244, 246, 0.9);
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .songs-list-header {
@@ -48,6 +55,62 @@
   color: #111827;
 }
 
+/* ========================= Search Bar ========================= */
+.songs-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.songs-search-icon {
+  position: absolute;
+  left: 22px;
+  font-size: 13px;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.songs-search-input {
+  width: 100%;
+  padding: 7px 30px 7px 32px;
+  font-size: 13px;
+  color: #111827;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.songs-search-input:focus {
+  border-color: #6366f1;
+  background: #ffffff;
+}
+
+.songs-search-input::placeholder {
+  color: #9ca3af;
+}
+
+.songs-search-clear {
+  position: absolute;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.12s ease;
+}
+
+.songs-search-clear:hover {
+  color: #374151;
+}
+
+/* ========================= Song list ========================= */
 .songs-list-scroll {
   flex: 1;
   overflow-y: auto;
@@ -175,14 +238,74 @@
   background: #f3f4f6;
 }
 
+/* ========================= Action buttons row ========================= */
+.songs-action-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.songs-edit-action-btn {
+  font-size: 12px;
+  padding: 5px 12px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #374151;
+  font-weight: 500;
+  transition: background 0.12s ease;
+  white-space: nowrap;
+}
+
+.songs-edit-action-btn:hover {
+  background: #f3f4f6;
+}
+
+.songs-save-action-btn {
+  font-size: 12px;
+  padding: 5px 12px;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.12s ease;
+  white-space: nowrap;
+}
+
+.songs-save-action-btn:hover {
+  background: #4f46e5;
+}
+
+.songs-download-btn {
+  font-size: 12px;
+  padding: 5px 12px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #374151;
+  font-weight: 500;
+  transition: background 0.12s ease;
+  white-space: nowrap;
+}
+
+.songs-download-btn:hover {
+  background: #f3f4f6;
+}
+
 .songs-delete-btn {
   font-size: 12px;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border: 1px solid #fca5a5;
   background: #fff5f5;
   border-radius: 6px;
   cursor: pointer;
   color: #dc2626;
+  font-weight: 500;
   transition: background 0.12s ease;
   white-space: nowrap;
 }
@@ -191,6 +314,7 @@
   background: #fee2e2;
 }
 
+/* ========================= Detail content ========================= */
 .songs-detail-device {
   font-size: 13px;
   color: #6b7280;
@@ -240,13 +364,8 @@
   line-height: 1.7;
 }
 
-.songs-markdown-body p {
-  margin: 0 0 12px;
-}
-
-.songs-markdown-body strong {
-  font-weight: 600;
-}
+.songs-markdown-body p { margin: 0 0 12px; }
+.songs-markdown-body strong { font-weight: 600; }
 
 .songs-markdown-body ul,
 .songs-markdown-body ol {
@@ -254,9 +373,7 @@
   margin: 0 0 12px;
 }
 
-.songs-markdown-body li {
-  margin-bottom: 4px;
-}
+.songs-markdown-body li { margin-bottom: 4px; }
 
 .songs-markdown-body h1,
 .songs-markdown-body h2,
@@ -317,9 +434,7 @@
   transition: background 0.12s ease;
 }
 
-.songs-save-btn:hover {
-  background: #374151;
-}
+.songs-save-btn:hover { background: #374151; }
 
 .songs-cancel-btn {
   font-size: 12px;
@@ -332,6 +447,4 @@
   transition: background 0.12s ease;
 }
 
-.songs-cancel-btn:hover {
-  background: #f3f4f6;
-}
+.songs-cancel-btn:hover { background: #f3f4f6; }

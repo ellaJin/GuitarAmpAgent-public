@@ -1,11 +1,12 @@
-// src/pages/Chat/useChatLogic.ts
+/// src/pages/Chat/useChatLogic.ts
 import { useState, useEffect, useRef } from "react";
 import { api } from "../../lib/api";
 
 export interface Message {
   role: "user" | "ai";
   content: string;
-  id?: string; // DB UUID — present on AI messages after server response
+  id?: string;
+  isToneRecipe?: boolean; // ✅ 新增：只有音色問題才顯示 Save to Library
 }
 
 export const useChatLogic = () => {
@@ -80,6 +81,7 @@ export const useChatLogic = () => {
         role: "ai",
         content: data?.answer ?? "",
         id: data?.ai_message_id ?? undefined,
+        isToneRecipe: data?.is_tone_recipe ?? false, // ✅ 新增
       };
       setMessages((prev) => [...prev, aiMsg]);
 
@@ -110,6 +112,7 @@ export const useChatLogic = () => {
         id: m.id,
         role: (m.role === "assistant" ? "ai" : "user") as "user" | "ai",
         content: m.content,
+        isToneRecipe: false, // 舊對話不顯示 Save to Library
       }));
       setMessages(msgs);
       setConversationId(id);

@@ -8,6 +8,7 @@ from app.service.auth_service import get_current_user_info
 from app.service import chat_service
 from app.service import conversation_service
 from app.adapters.chat_adapter import to_chat_query_request, to_chat_query_context
+from app.service.chat_router import route_query, ROUTE_TONE_RECIPE
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
 
@@ -59,10 +60,13 @@ async def chat_query(
         active_device=active_device,
     )
 
-    # 4) Call chat service (unchanged, fully stateless)
+    # 4) 判斷是否為音色問題
+    route = route_query(request.message)
+
+    # 5) Call chat service
     answer = await chat_service.get_chat_response(req, ctx)
 
-    # 5) Persist AI response
+    # 6) Persist AI response
     ai_msg_id = None
     if conv_id:
         try:
@@ -76,4 +80,5 @@ async def chat_query(
         "status": "success",
         "conversation_id": conv_id,
         "ai_message_id": ai_msg_id,
+        "is_tone_recipe": route == ROUTE_TONE_RECIPE,
     }

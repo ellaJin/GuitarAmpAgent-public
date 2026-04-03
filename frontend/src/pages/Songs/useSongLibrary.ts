@@ -23,6 +23,12 @@ export function useSongLibrary() {
   const [selectedSong, setSelectedSong] = useState<SongDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // 根據 searchQuery 過濾歌曲列表
+  const filteredSongs = songs.filter((s) =>
+    s.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const fetchSongs = useCallback(async () => {
     setLoading(true);
@@ -66,7 +72,7 @@ export function useSongLibrary() {
   );
 
   const updateSong = useCallback(
-    async (id: string, patch: { name?: string; notes?: string }) => {
+    async (id: string, patch: { name?: string; notes?: string; raw_text?: string }) => {
       try {
         await api.patch(`/songs/${id}`, patch);
         setSongs((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
@@ -80,5 +86,39 @@ export function useSongLibrary() {
     []
   );
 
-  return { songs, selectedSong, loading, detailLoading, fetchSongs, selectSong, deleteSong, updateSong };
+  // 下載歌曲為 .txt 檔案
+  const downloadSong = useCallback((song: SongDetail) => {
+    const content = [
+      `Song: ${song.name}`,
+      song.brand && song.model ? `Device: ${song.brand} ${song.model}` : "",
+      song.notes ? `\nNotes:\n${song.notes}` : "",
+      `\n---\n`,
+      song.raw_text,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${song.name.replace(/[^a-z0-9]/gi, "_")}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
+  return {
+    songs,
+    filteredSongs,
+    searchQuery,
+    setSearchQuery,
+    selectedSong,
+    loading,
+    detailLoading,
+    fetchSongs,
+    selectSong,
+    deleteSong,
+    updateSong,
+    downloadSong,
+  };
 }

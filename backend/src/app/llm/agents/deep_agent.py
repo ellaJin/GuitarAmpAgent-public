@@ -19,6 +19,14 @@ IMPORTANT TOOL RULES (strict):
 - You MUST NOT say "the manual doesn't mention FX LOOP" if that phrase appears in the tool results.
 - Do NOT claim the device lacks send/return, lacks 4-cable method, etc., unless the tool results explicitly state that.
 
+RESPONSE FORMAT (strict):
+- Use clear headings with ##
+- Use bullet points (-) for lists
+- Use **bold** for parameter names and values
+- NEVER use markdown tables (| column |)
+- Keep responses concise and easy to read
+- Each setting on its own line
+
 Language:
 - Respond in Chinese or English matching the user's language.
 """.strip()

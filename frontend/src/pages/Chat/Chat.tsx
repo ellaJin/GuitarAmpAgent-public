@@ -78,7 +78,6 @@ export default function Chat() {
           </div>
 
           <div className="chat-header-right">
-            {/* ✅ 點右上角打開 Settings */}
             <button
               type="button"
               onClick={() => setSettingsOpen(true)}
@@ -112,6 +111,17 @@ export default function Chat() {
             const isUser = role === "user";
             const isAI = !isUser;
 
+            // ✅ 找前一條用戶訊息（AI 回應的上一條）
+            const prevUserMessage = isAI
+              ? messages
+                  .slice(0, idx)
+                  .reverse()
+                  .find((m) => (m as any).role === "user")
+              : null;
+            const prevUserContent = prevUserMessage
+              ? (prevUserMessage as any).content ?? ""
+              : "";
+
             return (
               <div key={id} className={`message-row ${role} ${isAI ? "has-actions" : ""}`}>
                 {isAI && <div className="avatar-mini">🤖</div>}
@@ -121,7 +131,12 @@ export default function Chat() {
                 {/* ✅ Copy/Save 放在 AI 回覆外面右下 */}
                 {isAI && (
                   <div className="msg-actions-outside">
-                    <MessageActions content={content} messageId={String(id)} />
+                    <MessageActions
+                      content={content}
+                      messageId={String(id)}
+                      userMessage={prevUserContent}
+                      isToneRecipe={(msg as any).isToneRecipe ?? false}
+                    />
                   </div>
                 )}
               </div>
@@ -160,11 +175,7 @@ export default function Chat() {
         </footer>
       </section>
 
-      {/* ✅ 真正把 SettingsPanel render 出來 */}
       <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   );
 }
-
-
-
