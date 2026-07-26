@@ -1,9 +1,14 @@
 # app/service/chat_service.py
+import json
+import logging
 from typing import List, Tuple
 
 from app.llm.tool_factory import ToolFactory
 from app.llm.agents.deep_agent import build_deep_agent
 from app.schemas.chat import ChatQueryRequest, ChatQueryContext
+from app.utils.quality import compute_quality_flags
+
+logger = logging.getLogger("quality")
 
 from app.service.chat_router import (
     route_query,
@@ -46,8 +51,9 @@ async def _run_deep_agent(req: ChatQueryRequest, ctx: ChatQueryContext) -> str:
     """
     你原来的 deep_agent 流程抽出来，方便 manual_qa handler 复用/将来扩展。
     """
+    accumulator = {"source_count": 0}
     # tools = ToolFactory.get_tools(ctx.user_id, ctx.kb_source_id)
-    tools = ToolFactory.get_tools(ctx.user_id, ctx.active_device)
+    tools = ToolFactory.get_tools(ctx.user_id, ctx.active_device, accumulator)
     graph = build_deep_agent(tools)
 
     print("[chat] tools_count =", len(tools))
@@ -65,6 +71,7 @@ async def _run_deep_agent(req: ChatQueryRequest, ctx: ChatQueryContext) -> str:
     messages.append(("human", req.user_input))
 
     result_state = await graph.ainvoke({"messages": messages})
+    source_count = accumulator["source_count"]
     msgs = result_state.get("messages", [])
 
     tool_names: List[str] = []
@@ -87,7 +94,12 @@ async def _run_deep_agent(req: ChatQueryRequest, ctx: ChatQueryContext) -> str:
         return "抱歉，我没能理解您的问题。"
 
     last_msg = msgs[-1]
-    return getattr(last_msg, "content", None) or str(last_msg)
+    response_text = getattr(last_msg, "content", None) or str(last_msg)
+
+    quality = compute_quality_flags(response_text, source_count)
+    logger.info(json.dumps({"event": "quality_flag", **quality}))
+
+    return response_text
 
 
 async def get_chat_response(req: ChatQueryRequest, ctx: ChatQueryContext) -> str:

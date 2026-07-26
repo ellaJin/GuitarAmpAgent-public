@@ -1,0 +1,255 @@
+/* EvalPage — extends AdminHome.css design language */
+
+.eval-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.eval-tab {
+  padding: 7px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: #e8e8e8;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.eval-tab.active {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.eval-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.eval-textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e8e8e8;
+  font-size: 13px;
+  font-family: monospace;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.eval-hint {
+  font-size: 12px;
+  opacity: 0.55;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.eval-hint code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.eval-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 24px 0 12px 0;
+}
+
+/* Summary cards */
+.eval-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.eval-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.eval-card.composite {
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.06);
+}
+
+.eval-score {
+  font-size: 30px;
+  font-weight: 700;
+  color: #e8e8e8;
+  line-height: 1;
+}
+
+.eval-score.na {
+  font-size: 20px;
+  opacity: 0.45;
+}
+
+.eval-label {
+  font-size: 11px;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Per-question table */
+.eval-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.eval-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.eval-table th {
+  text-align: left;
+  padding: 6px 10px;
+  font-size: 11px;
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.eval-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: top;
+  color: #e8e8e8;
+}
+
+.eval-table tr:last-child td {
+  border-bottom: none;
+}
+
+.eval-table td.num {
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+.eval-table td.question-cell {
+  max-width: 240px;
+}
+
+.eval-table td.answer-cell {
+  max-width: 300px;
+  opacity: 0.8;
+}
+
+.eval-cell-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.eval-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  opacity: 0.75;
+  margin-bottom: 6px;
+}
+
+.eval-select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e8e8e8;
+  font-size: 13px;
+  outline: none;
+  margin-bottom: 16px;
+}
+
+.eval-select:disabled {
+  opacity: 0.5;
+}
+
+.eval-select option {
+  background-color: #1a1b1f;
+  color: #e8e8e8;
+}
+
+.eval-dropzone {
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: border-color 0.2s;
+}
+
+.eval-dropzone:hover:not(.disabled) {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.eval-dropzone.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.eval-dz-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.eval-dz-sub {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.eval-loading {
+  text-align: center;
+  padding: 32px 0;
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.eval-back {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size: 13px;
+  opacity: 0.7;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #e8e8e8;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.eval-back:hover {
+  opacity: 1;
+}

@@ -13,7 +13,7 @@ from app.llm.prompts.tone_recipe import (
     build_json_retry_prompt,
 )
 
-RAG_TOOL_NAME = "search_guitar_manuals"
+RAG_TOOL_NAME = "search_manual_chunks"
 RAG_SNIPPET_MAX_CHARS = 3500
 
 # 极小的“污染关键词”过滤（可以按需要再加）
@@ -38,7 +38,11 @@ def _format_device_name(active_device: Any) -> str:
         return name or "Unknown device"
     if isinstance(active_device, str) and active_device.strip():
         return active_device.strip()
-    return "Unknown device"
+    # Handle Pydantic model (ActiveDeviceContext)
+    brand = (getattr(active_device, "brand", "") or "").strip()
+    model = (getattr(active_device, "model", "") or "").strip()
+    name = f"{brand} {model}".strip()
+    return name or "Unknown device"
 
 
 def _find_tool(tools: List[Any], name: str) -> Optional[Any]:
@@ -71,7 +75,7 @@ async def _call_tool_any(tool: Any, payload: Dict[str, Any]) -> str:
 
 
 async def _run_rag(rag_tool: Any, query: str) -> str:
-    payload_candidates = [{"query": query}, {"q": query}, {"text": query}]
+    payload_candidates = [{"inp": query}, {"query": query}, {"q": query}, {"text": query}]
     last_err: Optional[Exception] = None
     for payload in payload_candidates:
         try:
@@ -79,7 +83,7 @@ async def _run_rag(rag_tool: Any, query: str) -> str:
         except Exception as e:
             last_err = e
     raise RuntimeError(
-        f"search_guitar_manuals failed. tried_payloads={payload_candidates}. "
+        f"search_manual_chunks failed. tried_payloads={payload_candidates}. "
         f"error={type(last_err).__name__}: {last_err}"
     )
 
@@ -165,14 +169,24 @@ def _validate_output(text: str) -> List[str]:
     return problems
 
 
+def _strip_code_fences(text: str) -> str:
+    s = text.strip()
+    if s.startswith("```"):
+        s = re.sub(r"^```[a-zA-Z]*\n?", "", s)
+        s = re.sub(r"\n?```$", "", s)
+    return s.strip()
+
+
 async def _invoke_llm(prompt: str) -> str:
     model = get_llm()
     out = await model.ainvoke(prompt) if hasattr(model, "ainvoke") else model.invoke(prompt)
-    return getattr(out, "content", None) or str(out)
+    raw = getattr(out, "content", None) or str(out)
+    return _strip_code_fences(raw)
 
 
 async def handle_tone_recipe(req, ctx) -> str:
-    tools = ToolFactory.get_tools(ctx.user_id, ctx.kb_source_id) or []
+    accumulator = {"source_count": 0}
+    tools = ToolFactory.get_tools(ctx.user_id, ctx.active_device, accumulator) or []
     print("[tone] tools_count =", len(tools))
     print("[tone] tools_names =", [_tool_name(t) for t in tools])
 

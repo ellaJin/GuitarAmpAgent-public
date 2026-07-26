@@ -9,6 +9,7 @@ import ForgotPassword from "./pages/Login/ForgotPassword";
 import DeviceAdmin from "./pages/Admin/DeviceAdmin/DeviceAdmin";
 import AdminHome from "./pages/Admin/AdminHome/AdminHome";
 import AddDocument from "./pages/Admin/AddDocument/AddDocument";
+import EvalPage from "./pages/Admin/Eval/EvalPage";
 import SongLibrary from "./pages/Songs/SongLibrary";
 import MyDevices from "./pages/MyDevices/MyDevices";
 
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/admin" element={<AdminHome />} />
         <Route path="/admin/device" element={<DeviceAdmin />} />
         <Route path="/admin/add-document/:deviceModelId" element={<AddDocument />} />
+        <Route path="/admin/eval" element={<EvalPage />} />
 
         {/* 404 */}
         <Route path="*" element={<div style={{ padding: 24 }}>404</div>} />

@@ -38,7 +38,7 @@ def _extract_query(inp: Any) -> str:
 
 class ToolFactory:
     @staticmethod
-    def get_tools(user_id: str, active_device: Optional[ActiveDeviceContext]) -> List:
+    def get_tools(user_id: str, active_device: Optional[ActiveDeviceContext], accumulator: dict) -> List:
         if not active_device:
             return []
 
@@ -62,7 +62,10 @@ class ToolFactory:
             q = _extract_query(inp)
             if not q:
                 return "在当前设备的知识库中未找到相关信息。"
-            return search_local_docs_logic(query=q, user_id=user_id, kb_source_id=kb_source_id)
+            raw = search_local_docs_logic(query=q, user_id=user_id, kb_source_id=kb_source_id)
+            data = json.loads(raw)
+            accumulator["source_count"] += data["source_count"]
+            return data["content"]
 
         tools.append(search_manual_chunks)
 
@@ -76,13 +79,16 @@ class ToolFactory:
             if not q:
                 return json.dumps({"items": [], "meta": {"reason": "empty_query"}}, ensure_ascii=False)
 
-            return search_effect_kb_logic(
+            raw = search_effect_kb_logic(
                 query=q,
                 user_id=user_id,
                 device_model_id=device_model_id,
                 kb_source_id=kb_source_id,
                 top_k=8,
             )
+            data = json.loads(raw)
+            accumulator["source_count"] += data.get("meta", {}).get("hits", 0)
+            return raw
 
         tools.append(search_effect_kb)
 

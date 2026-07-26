@@ -18,3 +18,13 @@ def get_llm():
             )
         )
     return _llm_instance
+
+
+def get_eval_llm():
+    return LLMFactory.create(LLMConfig(
+        provider="openai",
+        model="deepseek-v3",
+        api_key=settings.DEEPSEEK_API_KEY,
+        base_url=settings.DEEPSEEK_BASE_URL,
+        temperature=0,
+    ))

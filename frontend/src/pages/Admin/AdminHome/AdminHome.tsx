@@ -294,7 +294,10 @@ export default function AdminHome() {
 
         <div className="admin-actions">
           <button className="primary" onClick={() => nav("/admin/device")}>
-            + Upload New Device PDF
+            Device Management
+          </button>
+          <button className="secondary" onClick={() => nav("/admin/eval")}>
+            RAG Eval
           </button>
           <button className="secondary" onClick={refetch} disabled={loading}>
             {loading ? "Refreshing…" : "Refresh"}

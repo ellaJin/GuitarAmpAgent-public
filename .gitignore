@@ -1,3 +1,7 @@
 **/__pycache__/
-.env
-backend/.env
+.env*
+!.env.example
+.venv/
+node_modules/
+agentdb.dump
+.claude/

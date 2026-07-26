@@ -2,11 +2,15 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
+import time
 from typing import Any, Dict, List, Optional
 
 from app.db import get_db_con
 from app.dao.effect_kb_dao import query_raw_effect_entries
+
+logger = logging.getLogger("retrieval")
 
 
 def _tokenize(query: str) -> List[str]:
@@ -72,6 +76,7 @@ def search_effect_kb_logic(
 
     try:
         with get_db_con() as conn:
+            _t0 = time.perf_counter()
             rows = query_raw_effect_entries(
                 conn,
                 device_model_id=device_model_id,
@@ -79,6 +84,14 @@ def search_effect_kb_logic(
                 tokens=tokens,
                 limit=top_k,
             )
+            _latency_ms = round((time.perf_counter() - _t0) * 1000, 2)
+        logger.info(json.dumps({
+            "event": "retrieval",
+            "tool": "effect_kb",
+            "query": query[:80],
+            "num_results": len(rows),
+            "latency_ms": _latency_ms,
+        }))
     except Exception as e:
         return json.dumps(
             {
