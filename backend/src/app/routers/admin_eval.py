@@ -12,7 +12,7 @@ router = APIRouter(prefix="/admin/eval", tags=["AdminEval"])
 
 def _require_admin(x_admin_token: Optional[str]) -> None:
     token = os.getenv("ADMIN_TOKEN")
-    if token and x_admin_token != token:
+    if not token or x_admin_token != token:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 

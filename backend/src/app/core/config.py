@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     # --- Frontend (OAuth redirects + CORS) ---
     FRONTEND_URL: str = "http://localhost:5173"
 
+    # --- Feature flags ---
+    ENABLE_ADMIN_ROUTES: bool = True
+
     # --- LLM models and API configuration ---
     DEEPSEEK_API_KEY: str | None = None
     DEEPSEEK_BASE_URL: str | None = None

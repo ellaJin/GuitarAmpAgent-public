@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, B
 from pydantic import BaseModel
 from app.service import device_service
 from app.core.auth import get_current_user_id
+from app.core.config import settings
 
 router = APIRouter(prefix="/devices", tags=["Device"])
 
@@ -72,6 +73,9 @@ async def activate(
         file: UploadFile = File(...),
         current_user: dict = Depends(get_current_user_id)
 ):
+    if not settings.ENABLE_ADMIN_ROUTES:
+        raise HTTPException(status_code=404, detail="Not found")
+
     # 获取用户 ID
     user_id = current_user["id"] if isinstance(current_user, dict) else current_user
 

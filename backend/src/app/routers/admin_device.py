@@ -9,7 +9,7 @@ router = APIRouter(prefix="/admin/devices", tags=["AdminDevice"])
 
 def require_admin(x_admin_token: str | None):
     token = os.getenv("ADMIN_TOKEN")
-    if token and x_admin_token != token:
+    if not token or x_admin_token != token:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 

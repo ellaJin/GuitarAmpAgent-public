@@ -67,8 +67,9 @@ app.include_router(device_router)
 app.include_router(google_router)
 app.include_router(chat_router)
 app.include_router(jobs_router)
-app.include_router(admin_router)
-app.include_router(admin_eval_router)
+if settings.ENABLE_ADMIN_ROUTES:
+    app.include_router(admin_router)
+    app.include_router(admin_eval_router)
 app.include_router(conversations_router)
 app.include_router(songs_router)
 

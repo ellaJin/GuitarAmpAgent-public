@@ -41,11 +41,15 @@ export default function App() {
         <Route path="/songs" element={<SongLibrary />} />
         <Route path="/devices" element={<MyDevices />} />
 
-        {/* Admin */}
-        <Route path="/admin" element={<AdminHome />} />
-        <Route path="/admin/device" element={<DeviceAdmin />} />
-        <Route path="/admin/add-document/:deviceModelId" element={<AddDocument />} />
-        <Route path="/admin/eval" element={<EvalPage />} />
+        {/* Admin (dev only) */}
+        {import.meta.env.DEV && (
+          <>
+            <Route path="/admin" element={<AdminHome />} />
+            <Route path="/admin/device" element={<DeviceAdmin />} />
+            <Route path="/admin/add-document/:deviceModelId" element={<AddDocument />} />
+            <Route path="/admin/eval" element={<EvalPage />} />
+          </>
+        )}
 
         {/* 404 */}
         <Route path="*" element={<div style={{ padding: 24 }}>404</div>} />
