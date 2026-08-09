@@ -2,13 +2,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./SettingsPanel.css";
 
-import type { SettingsKey } from "./sections/types";
-import { SETTINGS_MENU } from "./sections/types";
+import type { SettingsKey } from "./Sections/types";
+import { SETTINGS_MENU } from "./Sections/types";
 
-import GeneralSection from "./sections/GeneralSection";
-import NotificationsSection from "./sections/NotificationsSection";
-import SecuritySection from "./sections/SecuritySection";
-import AccountSection from "./sections/AccountSection";
+import GeneralSection from "./Sections/GeneralSection";
+import NotificationsSection from "./Sections/NotificationsSection";
+import SecuritySection from "./Sections/SecuritySection";
+import AccountSection from "./Sections/AccountSection";
 
 type Props = {
   open: boolean;

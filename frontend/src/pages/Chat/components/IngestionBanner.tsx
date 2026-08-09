@@ -1,6 +1,6 @@
 // src/pages/Chat/IngestionBanner.tsx
 import React, { useMemo, useState } from "react";
-import type { IngestionJob } from "../../hooks/useIngestionJob";
+import type { IngestionJob } from "../../../hooks/useIngestionJob";
 
 type Props = {
   job: IngestionJob | null;
