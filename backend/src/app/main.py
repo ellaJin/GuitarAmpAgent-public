@@ -20,6 +20,7 @@ from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 load_dotenv()
 
+from app.core.config import settings
 from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
 from app.routers.devices import router as device_router
@@ -76,7 +77,9 @@ origins = [
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
+    settings.FRONTEND_URL,
 ]
+origins = list(dict.fromkeys(origins))  # de-dupe -- FRONTEND_URL defaults to a value already in this list
 
 # frontend
 app.add_middleware(

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../lib/api";
+import { api, API_BASE_URL } from "../../lib/api";
 import { useTogglePassword } from "../../hooks/useTogglePassword"; 
 
 export const useLogin = () => {
@@ -13,8 +13,7 @@ export const useLogin = () => {
 
   const handleGoogleLogin = () => {
     console.log("Redirecting to Google login...");
-    // 指向後端新增的入口
-    window.location.href = "http://127.0.0.1:8000/auth/google/login";
+    window.location.href = `${API_BASE_URL}/auth/google/login`;
   };
 
   const handleLogin = async (e: React.FormEvent) => {

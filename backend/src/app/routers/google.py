@@ -47,18 +47,17 @@ async def google_callback(code: str):
 
         if not user_id:
             # 这里的失败通常是 Google Code 无效或网络问题
-            return RedirectResponse(url="http://localhost:5173/login?error=google_auth_failed")
+            return RedirectResponse(url=f"{settings.FRONTEND_URL}/login?error=google_auth_failed")
 
         # 生成系统内部使用的 JWT Token
         access_token = create_access_token(subject=str(user_id))
 
         # 重定向回前端页面。注意：token 放在 URL 参数中由前端解析
-        # 建议前端地址也放入 settings 中，例如 settings.FRONTEND_URL
-        frontend_callback_url = f"http://localhost:5173/auth-success?token={access_token}"
+        frontend_callback_url = f"{settings.FRONTEND_URL}/auth-success?token={access_token}"
 
         return RedirectResponse(url=frontend_callback_url)
 
     except Exception as e:
         # 记录日志并跳转回登录页
         print(f"Google Login Error: {e}")
-        return RedirectResponse(url="http://localhost:5173/login?error=server_error")
+        return RedirectResponse(url=f"{settings.FRONTEND_URL}/login?error=server_error")

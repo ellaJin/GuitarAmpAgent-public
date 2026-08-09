@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str | None = None
     GOOGLE_REDIRECT_URI: str = "http://localhost:8000/auth/google/callback"
 
+    # --- Frontend (OAuth redirects + CORS) ---
+    FRONTEND_URL: str = "http://localhost:5173"
+
     # --- LLM models and API configuration ---
     DEEPSEEK_API_KEY: str | None = None
     DEEPSEEK_BASE_URL: str | None = None
