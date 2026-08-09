@@ -68,7 +68,7 @@ async def _run_pipeline_for_eval(
         user_name="eval",
         active_device=active_device,
     )
-    answer = await get_chat_response(req, ctx)
+    answer, _tokens_used, _ok = await get_chat_response(req, ctx)
 
     # 2. Collect retrieved contexts for RAGAS by inspecting ToolMessages.
     #    get_chat_response() does not expose internal messages, so we run a

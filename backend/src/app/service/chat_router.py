@@ -6,6 +6,24 @@ ROUTE_TONE_RECIPE = "TONE_RECIPE"
 ROUTE_OTHER       = "OTHER"
 
 
+def has_song_reference(text: str) -> bool:
+    """
+    True if the (lowercased) input plausibly names a specific song/artist,
+    as opposed to a bare topic word like "settings" or "preset". Single
+    source of truth for "is there a song here": route_query uses it to
+    decide whether to route to TONE_RECIPE at all, and handle_tone_recipe
+    (tone_recipe_handler.py) uses it again, independently, right before it
+    would generate a recipe.
+    """
+    return any(k in text for k in [
+        " by ",        # e.g. "hotel california by eagles"
+        "song", "track",
+        "cover", "solo tone", "rhythm tone",
+        "want to play",  # e.g. "i want to play AC/DC TNT"
+        "《", "》", "“", "”", "\"", "'"
+    ])
+
+
 def route_query(user_input: str) -> str:
     text = (user_input or "").strip().lower()
     if not text:
@@ -41,19 +59,18 @@ def route_query(user_input: str) -> str:
         "settings", "values", "exact values",
         "preset", "patch", "signal chain",
         "gain", "drive", "distortion", "overdrive",
-        "delay", "reverb", "chorus", "compressor", "eq"
+        "delay", "reverb", "chorus", "compressor", "eq",
+        "effect",  # covers "effect"/"effects" via substring match
     ])
-    song_cue = any(k in text for k in [
-        " by ",        # e.g. "hotel california by eagles"
-        "song", "track",
-        "cover", "solo tone", "rhythm tone",
-        "《", "》", "“", "”", "\"", "'"
-    ])
+    song_cue = has_song_reference(text)
 
-    # 组合规则：歌曲/音色信号 + 参数/设置信号 → TONE_RECIPE
-    if (zh_tone and ("音色" in text or "参数" in text or "数值" in text)) \
-       or (en_tone and ("tone" in text or "settings" in text or "preset" in text)) \
-       or (song_cue and (zh_tone or en_tone)):
+    # TONE_RECIPE requires an actual song/artist reference. zh_tone/en_tone
+    # alone are ordinary manual vocabulary ("settings", "preset", "参数") --
+    # they used to be able to fire this route standalone via a confirmer
+    # clause, which is what mis-routed things like "what is preset?" and
+    # "...settings for a ... effect?" here. A bare topic noun with no song
+    # now falls through to MANUAL_QA below, where it belongs.
+    if song_cue and (zh_tone or en_tone):
         return ROUTE_TONE_RECIPE
 
     # ================= MANUAL_QA =================

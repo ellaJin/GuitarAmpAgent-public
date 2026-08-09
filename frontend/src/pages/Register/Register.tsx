@@ -1,6 +1,7 @@
 //frontend/src/pages/Register/Register.tsx
 
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Register.css";
 import { useRegister } from "./useRegister";
 import { EyeIcon, EyeOffIcon } from "../../components/Icons";
@@ -110,9 +111,9 @@ export default function Register() {
 
           <div className="reg-footer">
             Already have an account?{" "}
-            <a href="/login" className="reg-link">
+            <Link to="/login" className="reg-link">
               Sign in.
-            </a>
+            </Link>
           </div>
         </div>
       </div>

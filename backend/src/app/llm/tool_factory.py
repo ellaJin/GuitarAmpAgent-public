@@ -62,7 +62,7 @@ class ToolFactory:
             q = _extract_query(inp)
             if not q:
                 return "在当前设备的知识库中未找到相关信息。"
-            raw = search_local_docs_logic(query=q, user_id=user_id, kb_source_id=kb_source_id)
+            raw = search_local_docs_logic(query=q, user_id=user_id, device_model_id=device_model_id)
             data = json.loads(raw)
             accumulator["source_count"] += data["source_count"]
             return data["content"]

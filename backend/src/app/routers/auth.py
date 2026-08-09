@@ -1,6 +1,6 @@
 # app/router/auth.py
-from fastapi import APIRouter, HTTPException, status, Depends
-from app.schemas.auth import RegisterIn, LoginIn, TokenOut
+from fastapi import APIRouter, HTTPException, status, Depends, Request
+from app.schemas.auth import RegisterIn, LoginIn, TokenOut, VerifyCodeIn, MessageOut
 from app.core.security import create_access_token
 from app.service.google_auth_service import process_google_login
 from app.service import auth_service
@@ -9,10 +9,18 @@ from app.core.auth import get_current_user_id
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/register", response_model=TokenOut)
-def register(data: RegisterIn):
-    # service
-    user_id = auth_service.register_user(data)
+@router.post("/register", response_model=MessageOut)
+def register(data: RegisterIn, request: Request):
+    # Per-IP rate limit, checked before pending_registrations is touched at all.
+    client_ip = request.client.host if request.client else "unknown"
+    auth_service.enforce_register_rate_limit(client_ip)
+    # Shared by signup and resend: idempotent, writes to pending_registrations only.
+    return auth_service.request_verification_code(data)
+
+
+@router.post("/register/verify", response_model=TokenOut)
+def verify_registration(data: VerifyCodeIn):
+    user_id = auth_service.verify_registration_code(data)
     return TokenOut(access_token=create_access_token(subject=user_id))
 
 

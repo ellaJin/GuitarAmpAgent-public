@@ -5,3 +5,7 @@
 node_modules/
 agentdb.dump
 .claude/
+CLAUDE.md
+full.sql
+schema.sql
+agentdb.sql

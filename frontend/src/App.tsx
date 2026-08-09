@@ -3,6 +3,7 @@ import Login from "./pages/Login/Login";
 import Bootstrap from "./pages/Bootstrap/Bootstrap";
 import Chat from "./pages/Chat/Chat";
 import Register from "./pages/Register/Register";
+import VerifyCode from "./pages/Register/VerifyCode";
 import Device from "./pages/Onboarding/Device/Device";
 import AuthSuccess from "./pages/Login/AuthSuccess";
 import ForgotPassword from "./pages/Login/ForgotPassword";
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/auth-success" element={<AuthSuccess />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/register/verify" element={<VerifyCode />} />
 
         {/* Routing hub after login */}
         <Route path="/bootstrap" element={<Bootstrap />} />

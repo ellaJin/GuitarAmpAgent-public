@@ -164,6 +164,55 @@
 }
 
 /* =========================
+   Info (e.g. "code resent")
+========================= */
+.reg-info {
+  margin-top: 6px;
+  margin-bottom: 18px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #eaf7ec;
+  border: 1px solid #cdeecf;
+  color: #227a33;
+  font-size: 15px;
+}
+
+/* =========================
+   Verify-code screen extras
+========================= */
+.reg-subtext {
+  margin: -18px 0 26px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.reg-input-code {
+  letter-spacing: 8px;
+  font-size: 24px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.reg-muted {
+  color: #888;
+}
+
+.reg-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.reg-link-btn:disabled {
+  color: #aaa;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* =========================
    Button
 ========================= */
 .reg-btn {

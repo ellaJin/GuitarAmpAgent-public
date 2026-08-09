@@ -39,21 +39,8 @@ function defaultSongName(userMessage: string, aiContent: string): string {
   return aiContent.trim().split(/\s+/).length > 6 ? `${words}...` : words;
 }
 
-function downloadTextFile(filename: string, text: string) {
-  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
 export default function MessageActions({ content, messageId, userMessage = "", isToneRecipe = false }: Props) {
   const [copied, setCopied] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [showSaveForm, setShowSaveForm] = useState(false);
   const [songName, setSongName] = useState("");
   const [savingToLib, setSavingToLib] = useState(false);
@@ -78,21 +65,6 @@ export default function MessageActions({ content, messageId, userMessage = "", i
       setCopied(true);
       setTimeout(() => setCopied(false), 900);
     }
-  };
-
-  const handleSave = () => {
-    const key = "guitarfx_saved_replies";
-    const prev = JSON.parse(localStorage.getItem(key) || "[]");
-    const item = {
-      id: messageId || `m_${Date.now()}`,
-      content: clean,
-      savedAt: new Date().toISOString(),
-    };
-    localStorage.setItem(key, JSON.stringify([item, ...prev]));
-    const filename = `AI_Reply_${new Date().toISOString().replace(/[:.]/g, "-")}.txt`;
-    downloadTextFile(filename, clean);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 900);
   };
 
   const openSaveForm = () => {
@@ -154,9 +126,6 @@ export default function MessageActions({ content, messageId, userMessage = "", i
       <div className="msg-actions">
         <button className="msg-action-btn" onClick={handleCopy} type="button">
           {copied ? "Copied" : "Copy"}
-        </button>
-        <button className="msg-action-btn" onClick={handleSave} type="button">
-          {saved ? "Saved" : "Save"}
         </button>
         {isToneRecipe && (
           savedToLib ? (

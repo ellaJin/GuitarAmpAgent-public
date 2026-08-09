@@ -12,6 +12,13 @@ class LoginIn(BaseModel):
     email: EmailStr
     password: str = Field(min_length=6, max_length=128)
 
+class VerifyCodeIn(BaseModel):
+    email: EmailStr
+    code: str = Field(pattern=r"^\d{6}$")
+
+class MessageOut(BaseModel):
+    message: str
+
 class TokenOut(BaseModel):
     access_token: str
     token_type: str = "bearer"

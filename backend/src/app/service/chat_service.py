@@ -1,7 +1,9 @@
 # app/service/chat_service.py
 import json
 import logging
-from typing import List, Tuple
+from typing import Any, List, Tuple
+
+from langchain_core.messages import AIMessage
 
 from app.llm.tool_factory import ToolFactory
 from app.llm.agents.deep_agent import build_deep_agent
@@ -47,7 +49,20 @@ def _dedupe_preserve_order(items: List[str]) -> List[str]:
     return out
 
 
-async def _run_deep_agent(req: ChatQueryRequest, ctx: ChatQueryContext) -> str:
+def _sum_usage_tokens(msgs: List[Any]) -> int:
+    total = 0
+    for m in msgs:
+        if not isinstance(m, AIMessage):
+            continue
+        usage = getattr(m, "usage_metadata", None)
+        if usage:
+            total += usage.get("total_tokens") or 0
+        else:
+            logger.warning(json.dumps({"event": "token_usage_missing", "handler": "deep_agent"}))
+    return total
+
+
+async def _run_deep_agent(req: ChatQueryRequest, ctx: ChatQueryContext) -> Tuple[str, int]:
     """
     你原来的 deep_agent 流程抽出来，方便 manual_qa handler 复用/将来扩展。
     """
@@ -73,6 +88,7 @@ async def _run_deep_agent(req: ChatQueryRequest, ctx: ChatQueryContext) -> str:
     result_state = await graph.ainvoke({"messages": messages})
     source_count = accumulator["source_count"]
     msgs = result_state.get("messages", [])
+    tokens_used = _sum_usage_tokens(msgs)
 
     tool_names: List[str] = []
     for m in msgs:
@@ -91,7 +107,7 @@ async def _run_deep_agent(req: ChatQueryRequest, ctx: ChatQueryContext) -> str:
     print("[chat] tools_used =", tool_names if tool_names else "[] (no tool called)")
 
     if not msgs:
-        return "抱歉，我没能理解您的问题。"
+        return "抱歉，我没能理解您的问题。", tokens_used
 
     last_msg = msgs[-1]
     response_text = getattr(last_msg, "content", None) or str(last_msg)
@@ -99,10 +115,14 @@ async def _run_deep_agent(req: ChatQueryRequest, ctx: ChatQueryContext) -> str:
     quality = compute_quality_flags(response_text, source_count)
     logger.info(json.dumps({"event": "quality_flag", **quality}))
 
-    return response_text
+    return response_text, tokens_used
 
 
-async def get_chat_response(req: ChatQueryRequest, ctx: ChatQueryContext) -> str:
+async def get_chat_response(req: ChatQueryRequest, ctx: ChatQueryContext) -> Tuple[str, int, bool]:
+    """
+    Returns (answer, tokens_used, ok). ok=False means the query failed
+    after its quota slot was already reserved -- callers should refund it.
+    """
     try:
         route = route_query(req.user_input)
         print("[chat] route =", route)
@@ -111,7 +131,7 @@ async def get_chat_response(req: ChatQueryRequest, ctx: ChatQueryContext) -> str
         if route == ROUTE_INVENTORY:
             conn = get_db_con()
             try:
-                return handle_inventory(conn, ctx)
+                return handle_inventory(conn, ctx), 0, True
             finally:
                 try:
                     conn.close()
@@ -121,7 +141,8 @@ async def get_chat_response(req: ChatQueryRequest, ctx: ChatQueryContext) -> str
         # ---- MANUAL_QA ----
         if route == ROUTE_MANUAL_QA:
             # 先走你现有 deep_agent 流程（下一步我们会把它挪进 manual_qa_handler）
-            return await handle_manual_qa(req, ctx, _run_deep_agent)
+            answer, tokens_used = await handle_manual_qa(req, ctx, _run_deep_agent)
+            return answer, tokens_used, True
 
         # ---- TONE_RECIPE ----
         if route == ROUTE_TONE_RECIPE:
@@ -133,9 +154,10 @@ async def get_chat_response(req: ChatQueryRequest, ctx: ChatQueryContext) -> str
             # 在这里手动给 req 注入一个基础指令，防止它完全变成无脑闲聊
             # 这样即使是 OTHER，Agent 发现不会答时也会去调用 search_manual_chunks
             req.user_input = f"(Technical Context: User is using {ctx.active_device.model}) {req.user_input}"
-            return await _run_deep_agent(req, ctx)
+            answer, tokens_used = await _run_deep_agent(req, ctx)
+            return answer, tokens_used, True
         # return await _run_deep_agent(req, ctx)
 
     except Exception as e:
         print(f"Chat Service Error: {str(e)}")
-        return f"对话服务出现异常: {str(e)}"
+        return f"对话服务出现异常: {str(e)}", 0, False

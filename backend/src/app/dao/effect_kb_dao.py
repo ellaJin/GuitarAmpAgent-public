@@ -81,3 +81,58 @@ def query_raw_effect_entries(
     with conn.cursor() as cur:
         cur.execute(sql, [device_model_id, kb_source_id, *params, limit])
         return cur.fetchall()
+
+
+def query_allow_list_entries(
+    conn,
+    *,
+    device_model_id: str,
+    raw_types: Sequence[str],
+) -> List[Row]:
+    """
+    Fetch this device's module rows for the given raw_type(s) straight from
+    raw_effect_entries — the ground truth for module naming in tone-recipe
+    generation (AMP/CAB names, delay/reverb/gate types, etc.).
+
+    Scoped by device_model_id only, not kb_source_id: a device's module list
+    is a property of the device, not of any single ingested PDF. A device can
+    have several kb_sources (owner's manual, parameter guide, editor manual,
+    ...) and the extracted rows may live under any of them, while
+    ctx.active_device.kb_source_id points at whichever one this user last
+    activated.
+
+    Unlike query_raw_effect_entries, this is not a keyword search: it returns
+    the device's full row set for the given raw_type(s) so the caller can
+    build an allow-list, not a relevance-ranked subset. A device with no
+    rows for a given raw_type simply gets an empty list back.
+
+    raw_type is not a fixed enum across brand extraction strategies (e.g.
+    delay is "DLY" on Boss GT devices, "DELAY" on Mooer/Line 6) — pass every
+    known spelling for the category being queried.
+
+    Assumes admin-seeded public sources only; enabling private user uploads
+    means extending this to (is_public = true OR user_id = <caller>).
+    """
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT
+                re.id::text,
+                re.raw_name,
+                coalesce(re.raw_name_norm,'') as raw_name_norm,
+                re.raw_type,
+                coalesce(re.raw_category,'') as raw_category,
+                coalesce(re.raw_description,'') as raw_description,
+                coalesce(re.source_section,'') as source_section,
+                re.source_page,
+                re.confidence
+            FROM raw_effect_entries re
+            JOIN kb_sources ks ON ks.id = re.kb_source_id
+            WHERE re.device_model_id = %s
+              AND ks.is_public = true
+              AND re.raw_type = ANY(%s)
+            ORDER BY re.raw_type ASC, re.raw_name ASC
+            """,
+            (device_model_id, list(raw_types)),
+        )
+        return cur.fetchall()

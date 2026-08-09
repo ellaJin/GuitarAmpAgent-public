@@ -7,6 +7,7 @@ from app.core.auth import get_current_user_id
 from app.service.auth_service import get_current_user_info
 from app.service import chat_service
 from app.service import conversation_service
+from app.service import quota_service
 from app.adapters.chat_adapter import to_chat_query_request, to_chat_query_context
 from app.service.chat_router import route_query, ROUTE_TONE_RECIPE
 
@@ -19,7 +20,7 @@ class Message(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    message: str
+    message: str = Field(..., max_length=2000)
     history: List[Message] = Field(default_factory=list)
     conversation_id: Optional[str] = None
 
@@ -29,6 +30,9 @@ async def chat_query(
     request: ChatRequest,
     user_id: str = Depends(get_current_user_id),
 ):
+    # 0) Gate before doing any work: reserves today's query slot or raises 429.
+    quota_service.enforce_and_consume_query_quota(user_id)
+
     # 1) Look up user info (active device + display name)
     user_info = get_current_user_info(user_id)
     if not user_info:
@@ -64,7 +68,15 @@ async def chat_query(
     route = route_query(request.message)
 
     # 5) Call chat service
-    answer = await chat_service.get_chat_response(req, ctx)
+    answer, tokens_used, ok = await chat_service.get_chat_response(req, ctx)
+    # Always record real token spend, even on failure (e.g. FORMAT_ERROR
+    # still burns a real LLM call) -- it's 0 and a no-op for paths that
+    # never reached the model.
+    quota_service.record_token_usage(user_id, tokens_used)
+    if not ok:
+        # Query failed after its slot was already reserved -- refund it so a
+        # backend error doesn't silently burn part of the user's daily cap.
+        quota_service.refund_query(user_id)
 
     # 6) Persist AI response
     ai_msg_id = None

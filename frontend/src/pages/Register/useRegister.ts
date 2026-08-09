@@ -40,7 +40,16 @@ export const useRegister = () => {
         display_name: formData.name
       });
 
-      nav("/login");
+      // Registration doesn't create the account yet -- it only sends a code.
+      // Carry email/password/display_name forward so the verify screen can
+      // resend (POST /auth/register again) without asking the user to retype.
+      nav("/register/verify", {
+        state: {
+          email: formData.email,
+          password: formData.password,
+          display_name: formData.name,
+        },
+      });
     } catch (err: any) {
       // 3. 核心修复：防止对象直接进入渲染导致白屏
       const detail = err?.response?.data?.detail;

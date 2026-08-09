@@ -1,5 +1,5 @@
 # app/service/chat_handlers/manual_qa_handler.py
-from typing import Callable, Awaitable
+from typing import Callable, Awaitable, Tuple
 from app.schemas.chat import ChatQueryRequest, ChatQueryContext
 from app.llm.prompts.manual_qa import (
     ManualQaPromptParams,
@@ -53,8 +53,8 @@ def _inject_guard_into_req(req: ChatQueryRequest, custom_guard: str) -> ChatQuer
 async def handle_manual_qa(
         req: ChatQueryRequest,
         ctx: ChatQueryContext,
-        run_deep_agent: Callable[[ChatQueryRequest, ChatQueryContext], Awaitable[str]],
-) -> str:
+        run_deep_agent: Callable[[ChatQueryRequest, ChatQueryContext], Awaitable[Tuple[str, int]]],
+) -> Tuple[str, int]:
     # --- 修复点：从 ctx.active_device (ActiveDeviceContext 对象) 中提取字符串 ---
     if ctx.active_device:
         # 按照你定义的 brand + model 组合

@@ -11,23 +11,23 @@ logger = logging.getLogger("retrieval")
 
 embeddings = QWenEmbeddings()
 
-def search_local_docs_logic(query: str, user_id: str, kb_source_id: str) -> str:
+def search_local_docs_logic(query: str, user_id: str, device_model_id: str) -> str:
     """
-    工具逻辑层：将文本转向量，并在指定 kb_source 内检索 chunks
+    工具逻辑层：将文本转向量，并在该设备的全部公开 kb_source 内检索 chunks
     """
     # （可选但强烈建议）简单日志，方便你确认确实定向到某个设备
     print("[rag] query =", query)
-    print("[rag] user_id =", user_id, "kb_source_id =", kb_source_id)
+    print("[rag] user_id =", user_id, "device_model_id =", device_model_id)
 
     # 1) 文本 -> 向量
     query_vec = embeddings.embed_query(query)
     vec_str = "[" + ",".join(map(str, query_vec)) + "]"
 
-    # 2) 调 DAO：按 kb_source_id 过滤
+    # 2) 调 DAO：按 device_model_id 过滤（覆盖该设备全部 manual）
     try:
         with get_db_con() as conn:
             _t0 = time.perf_counter()
-            rows = rag_dao.query_chunks_by_vector(conn, kb_source_id, vec_str, user_query=query)
+            rows = rag_dao.query_chunks_by_vector(conn, device_model_id, vec_str, user_query=query)
             _latency_ms = round((time.perf_counter() - _t0) * 1000, 2)
             logger.info(json.dumps({
                 "event": "retrieval",

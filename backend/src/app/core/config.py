@@ -51,4 +51,8 @@ class Settings(BaseSettings):
     LANGSMITH_ENDPOINT: str | None = None
     SERPAPI_KEY: str | None = None
 
+    # --- Email (Resend) ---
+    RESEND_API_KEY: str | None = None
+    RESEND_FROM_EMAIL: str = "onboarding@resend.dev"
+
 settings = Settings()

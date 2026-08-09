@@ -88,12 +88,15 @@ export const useChatLogic = () => {
       if (data?.conversation_id) {
         setConversationId(data.conversation_id);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Chat error:", error);
-      setMessages((prev) => [
-        ...prev,
-        { role: "ai", content: "抱歉，我现在无法处理您的请求，请检查后端 Agent 状态。" },
-      ]);
+      const status = error?.response?.status;
+      const detail = error?.response?.data?.detail;
+      const content =
+        status === 429 && typeof detail === "string"
+          ? detail
+          : "抱歉，我现在无法处理您的请求，请检查后端 Agent 状态。";
+      setMessages((prev) => [...prev, { role: "ai", content }]);
     } finally {
       setLoading(false);
     }

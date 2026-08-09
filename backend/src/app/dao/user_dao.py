@@ -81,3 +81,65 @@ def get_user_with_active_device(conn, user_id: str):
             (user_id,),
         )
         return cur.fetchone()
+
+
+def check_and_increment_query(conn, user_id: str):
+    """
+    Atomic lazy-reset + gate + increment for the daily usage quota. If
+    quota_date isn't today, resets both counters and allows the query
+    unconditionally; otherwise requires both counts under their limits.
+    Returns the new query_count on success, or None if over quota.
+    """
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE users
+            SET query_count = CASE WHEN quota_date = current_date THEN query_count + 1 ELSE 1 END,
+                token_count = CASE WHEN quota_date = current_date THEN token_count ELSE 0 END,
+                quota_date  = current_date
+            WHERE id = %s
+              AND (quota_date <> current_date
+                   OR (query_count < daily_query_limit AND token_count < daily_token_limit))
+            RETURNING query_count
+            """,
+            (user_id,),
+        )
+        row = cur.fetchone()
+        return row[0] if row else None
+
+
+def get_quota_status(conn, user_id: str):
+    """Snapshot for an over-quota error message: both caps, both current
+    counts, and the DB's own notion of the next reset instant."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT daily_query_limit, daily_token_limit, query_count, token_count,
+                   (current_date + 1)::timestamptz AS resets_at
+            FROM users
+            WHERE id = %s
+            """,
+            (user_id,),
+        )
+        return cur.fetchone()
+
+
+def add_token_usage(conn, user_id: str, tokens: int) -> None:
+    """Credit actual token usage after a completed LLM call. Not gated --
+    the gate already happened in check_and_increment_query before the call."""
+    with conn.cursor() as cur:
+        cur.execute(
+            "UPDATE users SET token_count = token_count + %s WHERE id = %s",
+            (tokens, user_id),
+        )
+
+
+def decrement_query_count(conn, user_id: str) -> None:
+    """Refund a query slot after a failed query, floored at 0 so a
+    concurrent lazy reset (quota_date rolled over mid-request) can't push
+    the count negative."""
+    with conn.cursor() as cur:
+        cur.execute(
+            "UPDATE users SET query_count = GREATEST(query_count - 1, 0) WHERE id = %s",
+            (user_id,),
+        )
